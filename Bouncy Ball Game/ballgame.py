@@ -19,7 +19,7 @@ pygame.init()
 
 # Create the screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Bouncing Ball Game")
+pygame.display.set_caption("Jayz Bouncy Little Balls!")
 font = pygame.font.Font(None, 36)
 
 # Clock to control the frame rate
@@ -27,18 +27,20 @@ clock = pygame.time.Clock()
 
 # Initialize variables for the game
 ball_pos = [WIDTH // 2, HEIGHT // 2]
-ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]  # Faster starting speed
 platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
 platform_speed = 10
 score = 0
 lives = 3
+initial_speed = 2
+ball_speed_increment = 1
 current_level = 1
+ball_speed = [initial_speed, initial_speed]
 platform_color = ORANGE  # Initialize platform color
 
 # Functions for screens
 def start_screen():
     screen.fill(BLACK)
-    show_text_on_screen("Bouncing Ball Game", 50, HEIGHT // 4)
+    show_text_on_screen("Jayz Bouncy Little Balls!", 50, HEIGHT // 4)
     show_text_on_screen("Press any key to start...", 30, HEIGHT // 3)
     show_text_on_screen("Move the platform with arrow keys...", 30, HEIGHT // 2)
     pygame.display.flip()
@@ -121,7 +123,7 @@ while game_running:
     if score >= current_level * 10:
         current_level += 1
         ball_pos = [WIDTH // 2, HEIGHT // 2]
-        ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]  # Randomize the ball speed
+        ball_speed = [speed + ball_speed_increment for speed in ball_speed]
         platform_color = change_platform_color()
 
     # Check if the ball falls off the screen
@@ -159,15 +161,15 @@ while game_running:
     pygame.draw.rect(screen, ORANGE, score_rect.inflate(10, 5))
     screen.blit(score_text, score_rect)
 
-    # Draw the level indicator in a light-blue rectangle at the top left (next to the score)
+    # Draw the level indicator in a light-blue rectangle at the top center
     level_text = font.render(f"Level: {current_level}", True, WHITE)
-    level_rect = level_text.get_rect(topleft=(score_rect.topright[0] + info_spacing, info_line_y))
+    level_rect = level_text.get_rect(center=(WIDTH // 2, info_line_y + 12))
     pygame.draw.rect(screen, LIGHT_BLUE, level_rect.inflate(10, 5))
     screen.blit(level_text, level_rect)
 
-    # Draw the lives in a red rectangle at the top left (next to the level)
+    # Draw the lives in a red rectangle at the top right
     lives_text = font.render(f"Lives: {lives}", True, WHITE)
-    lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + info_spacing, info_line_y))
+    lives_rect = lives_text.get_rect(topright=(WIDTH - 10, info_line_y))
     pygame.draw.rect(screen, RED, lives_rect.inflate(10, 5))
     screen.blit(lives_text, lives_rect)
 
